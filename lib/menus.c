@@ -167,6 +167,8 @@ void showAllCarsFromUser(char *loggedInUserCnh)
     CarNode *root = findAllCarsByUserCnh(loggedInUserCnh);
     CarNode *current = root;
 
+    int cont = 1;
+
     if (current == NULL)
     {
         printf("You don't have any cars registered!\n");
@@ -176,8 +178,10 @@ void showAllCarsFromUser(char *loggedInUserCnh)
         while (current != NULL)
         {
             Car car = current->car;
-            printf("Car[Model = %s, Brand = %s, Year = %d, Plate = %s]\n", car.model, car.brand, car.year, car.plate);
+            printf("%d - [Model = %s, Brand = %s, Year = %d, Plate = %s]\n", cont, car.model, car.brand, car.year, car.plate);
             current = current->next;
+
+            cont++;
         }
     }
 
