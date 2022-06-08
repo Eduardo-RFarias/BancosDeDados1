@@ -31,11 +31,11 @@ typedef struct Car_struct
     char userCnh[USER_CNH_MAXSIZE];
 } Car;
 
-typedef struct CarList_struct
+typedef struct CarNode_struct
 {
-    Car *cars;
-    int size;
-} CarList;
+    Car car;
+    struct CarNode_struct *next;
+} CarNode;
 
 User *createUser(char *name, char *cnh);
 
@@ -51,6 +51,8 @@ Car *findCarByPlate(char *plate);
 
 Car *findFirstCarByUserCnh(char *userCnh);
 
-CarList *findAllCarsByUserCnh(char *userCnh);
+CarNode *findAllCarsByUserCnh(char *userCnh);
+
+void freeCarsLinkedList(CarNode *root);
 
 #endif

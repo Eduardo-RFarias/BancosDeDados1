@@ -91,27 +91,53 @@ Car *findFirstCarByUserCnh(char *userCnh)
     return NULL;
 }
 
-CarList *findAllCarsByUserCnh(char *userCnh)
+CarNode *findAllCarsByUserCnh(char *userCnh)
 {
     FILE *carTable = openFileForReading(CAR_TABLE_PATH);
+
     Car car;
-    Car *carList; // TODO: Implement linked list
-    int i = 0;
+    CarNode *root;
+    CarNode *current;
+
+    int cont = 0;
 
     while (fread(&car, sizeof(Car), 1, carTable) == TRUE)
     {
         if (strcmp(car.userCnh, userCnh) == 0)
         {
-            carList[i] = car;
-            i++;
+            if (cont == 0)
+            {
+                root = (CarNode *)malloc(sizeof(CarNode));
+                root->car = car;
+                root->next = NULL;
+                current = root;
+            }
+            else
+            {
+                current->next = (CarNode *)malloc(sizeof(CarNode));
+                current->next->car = car;
+                current->next->next = NULL;
+                current = current->next;
+            }
+
+            cont++;
         }
     }
 
     fclose(carTable);
 
-    CarList *carListStruct = malloc(sizeof(CarList));
-    carListStruct->cars = carList;
-    carListStruct->size = i;
+    return root;
+}
 
-    return carListStruct;
+void freeCarsLinkedList(CarNode *root)
+{
+    CarNode *current = root;
+    CarNode *next;
+
+    while (current != NULL)
+    {
+        next = current->next;
+        free(current);
+        current = next;
+    }
 }

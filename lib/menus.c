@@ -76,6 +76,7 @@ int loggedInMenu()
             registerCarPrompt(loggedInUser->cnh);
             break;
         case '2':
+            showAllCarsFromUser(loggedInUser->cnh);
             break;
         case '3':
             logout();
@@ -99,7 +100,6 @@ void loginPrompt()
 
     printf("Enter your CNH: \n");
     readString(cnh, USER_CNH_MAXSIZE);
-    cnh[strlen(cnh) - 1] = '\0';
 
     int success = login(cnh);
 
@@ -120,11 +120,9 @@ void registerUserPrompt()
 
     printf("Enter your name: \n");
     readString(name, USER_NAME_MAXSIZE);
-    name[strlen(name) - 1] = '\0';
 
     printf("Enter your CNH: \n");
     readString(cnh, USER_CNH_MAXSIZE);
-    cnh[strlen(cnh) - 1] = '\0';
 
     User *newUser = createUser(name, cnh);
 
@@ -144,11 +142,9 @@ void registerCarPrompt(char *loggedInUserCnh)
 
     printf("Enter the brand: \n");
     readString(brand, CAR_BRAND_MAXSIZE);
-    brand[strlen(brand) - 1] = '\0';
 
     printf("Enter the model: \n");
     readString(model, CAR_MODEL_MAXSIZE);
-    model[strlen(model) - 1] = '\0';
 
     printf("Enter the year: \n");
     scanf("%d", &year);
@@ -156,11 +152,37 @@ void registerCarPrompt(char *loggedInUserCnh)
 
     printf("Enter the plate: \n");
     readString(plate, CAR_PLATE_MAXSIZE);
-    plate[strlen(plate) - 1] = '\0';
 
     Car *newCar = createCar(plate, brand, model, year, loggedInUserCnh);
 
     saveCar(newCar);
 
     free(newCar);
+}
+
+void showAllCarsFromUser(char *loggedInUserCnh)
+{
+    printf("\n\nCurrent user's cars.\n\n");
+
+    CarNode *root = findAllCarsByUserCnh(loggedInUserCnh);
+    CarNode *current = root;
+
+    if (current == NULL)
+    {
+        printf("You don't have any cars registered!\n");
+    }
+    else
+    {
+        while (current != NULL)
+        {
+            Car car = current->car;
+            printf("Car[Model = %s, Brand = %s, Year = %d, Plate = %s]\n", car.model, car.brand, car.year, car.plate);
+            current = current->next;
+        }
+    }
+
+    freeCarsLinkedList(root);
+
+    printf("\n\nPress ENTER to continue...\n");
+    getchar();
 }
