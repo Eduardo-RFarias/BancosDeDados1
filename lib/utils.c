@@ -22,21 +22,6 @@ FILE *appendOrCreateFileForWriting(char *fileName)
     exit(1);
 }
 
-FILE *openFileForReading(char *fileName)
-{
-    FILE *file;
-
-    file = fopen(fileName, "rb");
-
-    if (file != NULL)
-    {
-        return file;
-    }
-
-    printf("Error opening file!\n");
-    exit(1);
-}
-
 FILE *openFileOrCreateForReading(char *fileName)
 {
     FILE *file;

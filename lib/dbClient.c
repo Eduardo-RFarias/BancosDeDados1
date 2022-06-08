@@ -39,7 +39,7 @@ void saveCar(Car *car)
 // Searches
 User *findUserByCnh(char *cnh)
 {
-    FILE *userTable = openFileForReading(USER_TABLE_PATH);
+    FILE *userTable = openFileOrCreateForReading(USER_TABLE_PATH);
     User *user = malloc(sizeof(User));
 
     while (fread(user, sizeof(User), 1, userTable) == TRUE)
@@ -57,7 +57,7 @@ User *findUserByCnh(char *cnh)
 
 Car *findCarByPlate(char *plate)
 {
-    FILE *carTable = openFileForReading(CAR_TABLE_PATH);
+    FILE *carTable = openFileOrCreateForReading(CAR_TABLE_PATH);
     Car *car = malloc(sizeof(Car));
 
     while (fread(car, sizeof(Car), 1, carTable) == TRUE)
@@ -75,7 +75,7 @@ Car *findCarByPlate(char *plate)
 
 Car *findFirstCarByUserCnh(char *userCnh)
 {
-    FILE *carTable = openFileForReading(CAR_TABLE_PATH);
+    FILE *carTable = openFileOrCreateForReading(CAR_TABLE_PATH);
     Car *car = malloc(sizeof(Car));
 
     while (fread(car, sizeof(Car), 1, carTable) == TRUE)
@@ -93,11 +93,11 @@ Car *findFirstCarByUserCnh(char *userCnh)
 
 CarNode *findAllCarsByUserCnh(char *userCnh)
 {
-    FILE *carTable = openFileForReading(CAR_TABLE_PATH);
+    FILE *carTable = openFileOrCreateForReading(CAR_TABLE_PATH);
 
     Car car;
-    CarNode *root;
-    CarNode *current;
+    CarNode *root = NULL;
+    CarNode *current = NULL;
 
     int cont = 0;
 

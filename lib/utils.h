@@ -10,8 +10,6 @@
 
 FILE *appendOrCreateFileForWriting(char *fileName);
 
-FILE *openFileForReading(char *fileName);
-
 FILE *openFileOrCreateForReading(char *fileName);
 
 FILE *overrideOrCreateFileForWriting(char *fileName);

@@ -3,7 +3,7 @@
 int login(char *cnh)
 {
     FILE *loginFile = overrideOrCreateFileForWriting(LOGIN_FILE_PATH);
-    FILE *userTable = openFileForReading(USER_TABLE_PATH);
+    FILE *userTable = openFileOrCreateForReading(USER_TABLE_PATH);
 
     User user;
 
