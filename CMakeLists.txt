@@ -8,6 +8,6 @@ lib/menus.c
 lib/authService.c
 )
 
-add_executable(aula1_exercicio1 aula1exer1_EduardoFarias_190086521.c)
+add_executable(aula1_exercicio1 main.c)
 
 target_link_libraries(aula1_exercicio1 lib)

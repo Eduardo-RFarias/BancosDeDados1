@@ -19,24 +19,42 @@ Car *createCar(char *plate, char *brand, char *model, int year, char *userCnh)
     return car;
 }
 
-// Inserts
-// TODO: Implement unique constraint in CNH
 void saveUser(User *user)
 {
     FILE *userTable = appendOrCreateFileForWriting(USER_TABLE_PATH);
+
+    User *userWithSameCnh = findUserByCnh(user->cnh);
+
+    if (userWithSameCnh != NULL)
+    {
+        printf("User with same CNH already exists.\n");
+        printf("Press ENTER to continue...\n");
+        getchar();
+        return;
+    }
+
     fwrite(user, sizeof(User), 1, userTable);
     fclose(userTable);
 }
 
-// TODO: Implement unique constraint in PLATE
 void saveCar(Car *car)
 {
     FILE *carTable = appendOrCreateFileForWriting(CAR_TABLE_PATH);
+
+    Car *carWithSamePlate = findCarByPlate(car->plate);
+
+    if (carWithSamePlate != NULL)
+    {
+        printf("Car with same plate already exists.\n");
+        printf("Press ENTER to continue...\n");
+        getchar();
+        return;
+    }
+
     fwrite(car, sizeof(Car), 1, carTable);
     fclose(carTable);
 }
 
-// Searches
 User *findUserByCnh(char *cnh)
 {
     FILE *userTable = openFileOrCreateForReading(USER_TABLE_PATH);
@@ -63,24 +81,6 @@ Car *findCarByPlate(char *plate)
     while (fread(car, sizeof(Car), 1, carTable) == TRUE)
     {
         if (strcmp(car->plate, plate) == 0)
-        {
-            fclose(carTable);
-            return car;
-        }
-    }
-
-    fclose(carTable);
-    return NULL;
-}
-
-Car *findFirstCarByUserCnh(char *userCnh)
-{
-    FILE *carTable = openFileOrCreateForReading(CAR_TABLE_PATH);
-    Car *car = malloc(sizeof(Car));
-
-    while (fread(car, sizeof(Car), 1, carTable) == TRUE)
-    {
-        if (strcmp(car->userCnh, userCnh) == 0)
         {
             fclose(carTable);
             return car;

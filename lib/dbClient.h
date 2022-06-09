@@ -49,8 +49,6 @@ User *findUserByCnh(char *cnh);
 
 Car *findCarByPlate(char *plate);
 
-Car *findFirstCarByUserCnh(char *userCnh);
-
 CarNode *findAllCarsByUserCnh(char *userCnh);
 
 void freeCarsLinkedList(CarNode *root);

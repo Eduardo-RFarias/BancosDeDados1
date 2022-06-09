@@ -1,1 +1,4 @@
 build/
+bundle/**
+!bundle/**/*.c
+!bundle/LEIA-ME.txt
