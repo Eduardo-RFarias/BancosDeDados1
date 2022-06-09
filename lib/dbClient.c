@@ -1,21 +1,21 @@
 #include "dbClient.h"
 
-User *createUser(char *name, char *cnh)
+User *createUser(char *name, char *cpf)
 {
     User *user = (User *)malloc(sizeof(User));
     strcpy(user->name, name);
-    strcpy(user->cnh, cnh);
+    strcpy(user->cpf, cpf);
     return user;
 }
 
-Car *createCar(char *plate, char *brand, char *model, int year, char *userCnh)
+Car *createCar(char *chassis, char *plate, char *brand, char *model, char *userCpf)
 {
     Car *car = (Car *)malloc(sizeof(Car));
+    strcpy(car->chassis, chassis);
     strcpy(car->plate, plate);
     strcpy(car->brand, brand);
     strcpy(car->model, model);
-    car->year = year;
-    strcpy(car->userCnh, userCnh);
+    strcpy(car->userCpf, userCpf);
     return car;
 }
 
@@ -23,11 +23,11 @@ void saveUser(User *user)
 {
     FILE *userTable = appendOrCreateFileForWriting(USER_TABLE_PATH);
 
-    User *userWithSameCnh = findUserByCnh(user->cnh);
+    User *userWithSameCpf = findUserByCpf(user->cpf);
 
-    if (userWithSameCnh != NULL)
+    if (userWithSameCpf != NULL)
     {
-        printf("User with same CNH already exists.\n");
+        printf("User with same CPF already exists.\n");
         printf("Press ENTER to continue...\n");
         getchar();
         return;
@@ -42,10 +42,11 @@ void saveCar(Car *car)
     FILE *carTable = appendOrCreateFileForWriting(CAR_TABLE_PATH);
 
     Car *carWithSamePlate = findCarByPlate(car->plate);
+    Car *carWithSameChassis = findCarByChassis(car->chassis);
 
-    if (carWithSamePlate != NULL)
+    if (carWithSamePlate != NULL || carWithSameChassis != NULL)
     {
-        printf("Car with same plate already exists.\n");
+        printf("Car with same plate or chassis already exists.\n");
         printf("Press ENTER to continue...\n");
         getchar();
         return;
@@ -55,14 +56,14 @@ void saveCar(Car *car)
     fclose(carTable);
 }
 
-User *findUserByCnh(char *cnh)
+User *findUserByCpf(char *cpf)
 {
     FILE *userTable = openFileOrCreateForReading(USER_TABLE_PATH);
     User *user = malloc(sizeof(User));
 
     while (fread(user, sizeof(User), 1, userTable) == TRUE)
     {
-        if (strcmp(user->cnh, cnh) == 0)
+        if (strcmp(user->cpf, cpf) == 0)
         {
             fclose(userTable);
             return user;
@@ -91,7 +92,25 @@ Car *findCarByPlate(char *plate)
     return NULL;
 }
 
-CarNode *findAllCarsByUserCnh(char *userCnh)
+Car *findCarByChassis(char *chassis)
+{
+    FILE *carTable = openFileOrCreateForReading(CAR_TABLE_PATH);
+    Car *car = malloc(sizeof(Car));
+
+    while (fread(car, sizeof(Car), 1, carTable) == TRUE)
+    {
+        if (strcmp(car->chassis, chassis) == 0)
+        {
+            fclose(carTable);
+            return car;
+        }
+    }
+
+    fclose(carTable);
+    return NULL;
+}
+
+CarNode *findAllCarsByUserCpf(char *userCpf)
 {
     FILE *carTable = openFileOrCreateForReading(CAR_TABLE_PATH);
 
@@ -103,7 +122,7 @@ CarNode *findAllCarsByUserCnh(char *userCnh)
 
     while (fread(&car, sizeof(Car), 1, carTable) == TRUE)
     {
-        if (strcmp(car.userCnh, userCnh) == 0)
+        if (strcmp(car.userCpf, userCpf) == 0)
         {
             if (cont == 0)
             {

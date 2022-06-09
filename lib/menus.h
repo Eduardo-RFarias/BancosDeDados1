@@ -20,6 +20,6 @@ void registerUserPrompt();
 
 void registerCarPrompt();
 
-void showAllCarsFromUser(char *loggedInUserCnh);
+void showAllCarsFromUser(char *loggedInUserCpf);
 
 #endif

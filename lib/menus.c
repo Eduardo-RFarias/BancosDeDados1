@@ -73,10 +73,10 @@ int loggedInMenu()
         switch (choice)
         {
         case '1':
-            registerCarPrompt(loggedInUser->cnh);
+            registerCarPrompt(loggedInUser->cpf);
             break;
         case '2':
-            showAllCarsFromUser(loggedInUser->cnh);
+            showAllCarsFromUser(loggedInUser->cpf);
             break;
         case '3':
             logout();
@@ -96,12 +96,12 @@ void loginPrompt()
 {
     printf("\n\nLogin\n\n");
 
-    char cnh[USER_CNH_MAXSIZE];
+    char cpf[USER_CPF_MAXSIZE];
 
-    printf("Enter your CNH: \n");
-    readString(cnh, USER_CNH_MAXSIZE);
+    printf("Enter your CPF: \n");
+    readString(cpf, USER_CPF_MAXSIZE);
 
-    int success = login(cnh);
+    int success = login(cpf);
 
     if (success == FALSE)
     {
@@ -116,29 +116,29 @@ void registerUserPrompt()
     printf("\n\nRegistering a new user\n\n");
 
     char name[USER_NAME_MAXSIZE];
-    char cnh[USER_CNH_MAXSIZE];
+    char cpf[USER_CPF_MAXSIZE];
 
     printf("Enter your name: \n");
     readString(name, USER_NAME_MAXSIZE);
 
-    printf("Enter your CNH: \n");
-    readString(cnh, USER_CNH_MAXSIZE);
+    printf("Enter your CPF: \n");
+    readString(cpf, USER_CPF_MAXSIZE);
 
-    User *newUser = createUser(name, cnh);
+    User *newUser = createUser(name, cpf);
 
     saveUser(newUser);
 
     free(newUser);
 }
 
-void registerCarPrompt(char *loggedInUserCnh)
+void registerCarPrompt(char *loggedInUserCpf)
 {
     printf("\n\nRegistering new car\n\n");
 
-    char plate[CAR_PLATE_MAXSIZE];
     char brand[CAR_BRAND_MAXSIZE];
     char model[CAR_MODEL_MAXSIZE];
-    int year;
+    char chassis[CAR_CHASSIS_MAXSIZE];
+    char plate[CAR_PLATE_MAXSIZE];
 
     printf("Enter the brand: \n");
     readString(brand, CAR_BRAND_MAXSIZE);
@@ -146,25 +146,24 @@ void registerCarPrompt(char *loggedInUserCnh)
     printf("Enter the model: \n");
     readString(model, CAR_MODEL_MAXSIZE);
 
-    printf("Enter the year: \n");
-    scanf("%d", &year);
-    getchar();
+    printf("Enter the chassis: \n");
+    readString(chassis, CAR_CHASSIS_MAXSIZE);
 
     printf("Enter the plate: \n");
     readString(plate, CAR_PLATE_MAXSIZE);
 
-    Car *newCar = createCar(plate, brand, model, year, loggedInUserCnh);
+    Car *newCar = createCar(chassis, plate, brand, model, loggedInUserCpf);
 
     saveCar(newCar);
 
     free(newCar);
 }
 
-void showAllCarsFromUser(char *loggedInUserCnh)
+void showAllCarsFromUser(char *loggedInUserCpf)
 {
     printf("\n\nCurrent user's cars.\n\n");
 
-    CarNode *root = findAllCarsByUserCnh(loggedInUserCnh);
+    CarNode *root = findAllCarsByUserCpf(loggedInUserCpf);
     CarNode *current = root;
 
     int cont = 1;
@@ -178,7 +177,7 @@ void showAllCarsFromUser(char *loggedInUserCnh)
         while (current != NULL)
         {
             Car car = current->car;
-            printf("%d - [Model = %s, Brand = %s, Year = %d, Plate = %s]\n", cont, car.model, car.brand, car.year, car.plate);
+            printf("%d - [Model = %s, Brand = %s, Chassis = %s, Plate = %s]\n", cont, car.model, car.brand, car.chassis, car.plate);
             current = current->next;
 
             cont++;

@@ -16,9 +16,10 @@ Aula 1 - Exercício 1
 #define USER_TABLE_PATH "userTable.bin"
 #define CAR_TABLE_PATH "carTable.bin"
 
-#define USER_CNH_MAXSIZE 15
+#define USER_CPF_MAXSIZE 15
 #define USER_NAME_MAXSIZE 100
 
+#define CAR_CHASSIS_MAXSIZE 20
 #define CAR_PLATE_MAXSIZE 15
 #define CAR_BRAND_MAXSIZE 100
 #define CAR_MODEL_MAXSIZE 100
@@ -28,17 +29,17 @@ Aula 1 - Exercício 1
 
 typedef struct User_struct
 {
-    char cnh[USER_CNH_MAXSIZE];
+    char cpf[USER_CPF_MAXSIZE];
     char name[USER_NAME_MAXSIZE];
 } User;
 
 typedef struct Car_struct
 {
+    char chassis[CAR_CHASSIS_MAXSIZE];
     char plate[CAR_PLATE_MAXSIZE];
     char brand[CAR_BRAND_MAXSIZE];
     char model[CAR_MODEL_MAXSIZE];
-    int year;
-    char userCnh[USER_CNH_MAXSIZE];
+    char userCpf[USER_CPF_MAXSIZE];
 } Car;
 
 typedef struct CarNode_struct
@@ -133,14 +134,14 @@ void readString(char *destiny, int MAXSIZE)
     destiny[strlen(destiny) - 1] = '\0';
 }
 
-User *findUserByCnh(char *cnh)
+User *findUserByCpf(char *cpf)
 {
     FILE *userTable = openFileOrCreateForReading(USER_TABLE_PATH);
     User *user = malloc(sizeof(User));
 
     while (fread(user, sizeof(User), 1, userTable) == TRUE)
     {
-        if (strcmp(user->cnh, cnh) == 0)
+        if (strcmp(user->cpf, cpf) == 0)
         {
             fclose(userTable);
             return user;
@@ -169,22 +170,40 @@ Car *findCarByPlate(char *plate)
     return NULL;
 }
 
-User *createUser(char *name, char *cnh)
+Car *findCarByChassis(char *chassis)
+{
+    FILE *carTable = openFileOrCreateForReading(CAR_TABLE_PATH);
+    Car *car = malloc(sizeof(Car));
+
+    while (fread(car, sizeof(Car), 1, carTable) == TRUE)
+    {
+        if (strcmp(car->chassis, chassis) == 0)
+        {
+            fclose(carTable);
+            return car;
+        }
+    }
+
+    fclose(carTable);
+    return NULL;
+}
+
+User *createUser(char *name, char *cpf)
 {
     User *user = (User *)malloc(sizeof(User));
     strcpy(user->name, name);
-    strcpy(user->cnh, cnh);
+    strcpy(user->cpf, cpf);
     return user;
 }
 
-Car *createCar(char *plate, char *brand, char *model, int year, char *userCnh)
+Car *createCar(char *chassis, char *plate, char *brand, char *model, char *userCpf)
 {
     Car *car = (Car *)malloc(sizeof(Car));
+    strcpy(car->chassis, chassis);
     strcpy(car->plate, plate);
     strcpy(car->brand, brand);
     strcpy(car->model, model);
-    car->year = year;
-    strcpy(car->userCnh, userCnh);
+    strcpy(car->userCpf, userCpf);
     return car;
 }
 
@@ -192,11 +211,11 @@ void saveUser(User *user)
 {
     FILE *userTable = appendOrCreateFileForWriting(USER_TABLE_PATH);
 
-    User *userWithSameCnh = findUserByCnh(user->cnh);
+    User *userWithSameCpf = findUserByCpf(user->cpf);
 
-    if (userWithSameCnh != NULL)
+    if (userWithSameCpf != NULL)
     {
-        printf("User with same CNH already exists.\n");
+        printf("User with same CPF already exists.\n");
         printf("Press ENTER to continue...\n");
         getchar();
         return;
@@ -211,10 +230,11 @@ void saveCar(Car *car)
     FILE *carTable = appendOrCreateFileForWriting(CAR_TABLE_PATH);
 
     Car *carWithSamePlate = findCarByPlate(car->plate);
+    Car *carWithSameChassis = findCarByChassis(car->chassis);
 
-    if (carWithSamePlate != NULL)
+    if (carWithSamePlate != NULL || carWithSameChassis != NULL)
     {
-        printf("Car with same plate already exists.\n");
+        printf("Car with same plate or chassis already exists.\n");
         printf("Press ENTER to continue...\n");
         getchar();
         return;
@@ -224,7 +244,7 @@ void saveCar(Car *car)
     fclose(carTable);
 }
 
-CarNode *findAllCarsByUserCnh(char *userCnh)
+CarNode *findAllCarsByUserCpf(char *userCpf)
 {
     FILE *carTable = openFileOrCreateForReading(CAR_TABLE_PATH);
 
@@ -236,7 +256,7 @@ CarNode *findAllCarsByUserCnh(char *userCnh)
 
     while (fread(&car, sizeof(Car), 1, carTable) == TRUE)
     {
-        if (strcmp(car.userCnh, userCnh) == 0)
+        if (strcmp(car.userCpf, userCpf) == 0)
         {
             if (cont == 0)
             {
@@ -275,7 +295,7 @@ void freeCarsLinkedList(CarNode *root)
     }
 }
 
-int login(char *cnh)
+int login(char *cpf)
 {
     FILE *loginFile = overrideOrCreateFileForWriting(LOGIN_FILE_PATH);
     FILE *userTable = openFileOrCreateForReading(USER_TABLE_PATH);
@@ -284,9 +304,9 @@ int login(char *cnh)
 
     while (fread(&user, sizeof(User), 1, userTable) == TRUE)
     {
-        if (strcmp(user.cnh, cnh) == 0)
+        if (strcmp(user.cpf, cpf) == 0)
         {
-            fwrite(user.cnh, sizeof(char) * USER_CNH_MAXSIZE, 1, loginFile);
+            fwrite(user.cpf, sizeof(char) * USER_CPF_MAXSIZE, 1, loginFile);
             fclose(loginFile);
             fclose(userTable);
             return TRUE;
@@ -308,9 +328,9 @@ User *getLoggedInUser()
 {
     FILE *loginFile = openFileOrCreateForReading(LOGIN_FILE_PATH);
 
-    char userCnh[USER_CNH_MAXSIZE];
+    char userCpf[USER_CPF_MAXSIZE];
 
-    int success = fread(userCnh, sizeof(char) * USER_CNH_MAXSIZE, 1, loginFile);
+    int success = fread(userCpf, sizeof(char) * USER_CPF_MAXSIZE, 1, loginFile);
 
     fclose(loginFile);
 
@@ -319,7 +339,7 @@ User *getLoggedInUser()
         return NULL;
     }
 
-    User *user = findUserByCnh(userCnh);
+    User *user = findUserByCpf(userCpf);
 
     return user;
 }
@@ -328,9 +348,9 @@ int isLoggedIn()
 {
     FILE *loginFile = openFileOrCreateForReading(LOGIN_FILE_PATH);
 
-    char userCnh[USER_CNH_MAXSIZE];
+    char userCpf[USER_CPF_MAXSIZE];
 
-    if (fread(userCnh, sizeof(char) * USER_CNH_MAXSIZE, 1, loginFile) == TRUE)
+    if (fread(userCpf, sizeof(char) * USER_CPF_MAXSIZE, 1, loginFile) == TRUE)
     {
         fclose(loginFile);
         return TRUE;
@@ -344,12 +364,12 @@ void loginPrompt()
 {
     printf("\n\nLogin\n\n");
 
-    char cnh[USER_CNH_MAXSIZE];
+    char cpf[USER_CPF_MAXSIZE];
 
-    printf("Enter your CNH: \n");
-    readString(cnh, USER_CNH_MAXSIZE);
+    printf("Enter your CPF: \n");
+    readString(cpf, USER_CPF_MAXSIZE);
 
-    int success = login(cnh);
+    int success = login(cpf);
 
     if (success == FALSE)
     {
@@ -364,29 +384,29 @@ void registerUserPrompt()
     printf("\n\nRegistering a new user\n\n");
 
     char name[USER_NAME_MAXSIZE];
-    char cnh[USER_CNH_MAXSIZE];
+    char cpf[USER_CPF_MAXSIZE];
 
     printf("Enter your name: \n");
     readString(name, USER_NAME_MAXSIZE);
 
-    printf("Enter your CNH: \n");
-    readString(cnh, USER_CNH_MAXSIZE);
+    printf("Enter your CPF: \n");
+    readString(cpf, USER_CPF_MAXSIZE);
 
-    User *newUser = createUser(name, cnh);
+    User *newUser = createUser(name, cpf);
 
     saveUser(newUser);
 
     free(newUser);
 }
 
-void registerCarPrompt(char *loggedInUserCnh)
+void registerCarPrompt(char *loggedInUserCpf)
 {
     printf("\n\nRegistering new car\n\n");
 
-    char plate[CAR_PLATE_MAXSIZE];
     char brand[CAR_BRAND_MAXSIZE];
     char model[CAR_MODEL_MAXSIZE];
-    int year;
+    char chassis[CAR_CHASSIS_MAXSIZE];
+    char plate[CAR_PLATE_MAXSIZE];
 
     printf("Enter the brand: \n");
     readString(brand, CAR_BRAND_MAXSIZE);
@@ -394,25 +414,24 @@ void registerCarPrompt(char *loggedInUserCnh)
     printf("Enter the model: \n");
     readString(model, CAR_MODEL_MAXSIZE);
 
-    printf("Enter the year: \n");
-    scanf("%d", &year);
-    getchar();
+    printf("Enter the chassis: \n");
+    readString(chassis, CAR_CHASSIS_MAXSIZE);
 
     printf("Enter the plate: \n");
     readString(plate, CAR_PLATE_MAXSIZE);
 
-    Car *newCar = createCar(plate, brand, model, year, loggedInUserCnh);
+    Car *newCar = createCar(chassis, plate, brand, model, loggedInUserCpf);
 
     saveCar(newCar);
 
     free(newCar);
 }
 
-void showAllCarsFromUser(char *loggedInUserCnh)
+void showAllCarsFromUser(char *loggedInUserCpf)
 {
     printf("\n\nCurrent user's cars.\n\n");
 
-    CarNode *root = findAllCarsByUserCnh(loggedInUserCnh);
+    CarNode *root = findAllCarsByUserCpf(loggedInUserCpf);
     CarNode *current = root;
 
     int cont = 1;
@@ -426,7 +445,7 @@ void showAllCarsFromUser(char *loggedInUserCnh)
         while (current != NULL)
         {
             Car car = current->car;
-            printf("%d - [Model = %s, Brand = %s, Year = %d, Plate = %s]\n", cont, car.model, car.brand, car.year, car.plate);
+            printf("%d - [Model = %s, Brand = %s, Chassis = %s, Plate = %s]\n", cont, car.model, car.brand, car.chassis, car.plate);
             current = current->next;
 
             cont++;
@@ -495,10 +514,10 @@ int loggedInMenu()
         switch (choice)
         {
         case '1':
-            registerCarPrompt(loggedInUser->cnh);
+            registerCarPrompt(loggedInUser->cpf);
             break;
         case '2':
-            showAllCarsFromUser(loggedInUser->cnh);
+            showAllCarsFromUser(loggedInUser->cpf);
             break;
         case '3':
             logout();

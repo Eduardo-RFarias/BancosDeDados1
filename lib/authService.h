@@ -8,7 +8,7 @@
 
 #include "dbClient.h"
 
-int login(char *cnh);
+int login(char *cpf);
 
 void logout();
 
