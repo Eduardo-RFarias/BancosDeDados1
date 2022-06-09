@@ -27,12 +27,20 @@ Aula 1 - Exercício 1
 #define TRUE 1
 #define FALSE 0
 
+/**
+ * The user struct stores the user cpf and name.
+ * The cpf is unique among the users.
+ */
 typedef struct User_struct
 {
     char cpf[USER_CPF_MAXSIZE];
     char name[USER_NAME_MAXSIZE];
 } User;
 
+/**
+ * The car struct stores the car chassis, plate, brand and model.
+ * The car chassis and plate are unique among the cars.
+ */
 typedef struct Car_struct
 {
     char chassis[CAR_CHASSIS_MAXSIZE];
@@ -42,6 +50,10 @@ typedef struct Car_struct
     char userCpf[USER_CPF_MAXSIZE];
 } Car;
 
+/**
+ * The CarNode struct represents a node in a linked list of cars.
+ * The car field stores the car data, the next field stores the pointer to the next item.
+ */
 typedef struct CarNode_struct
 {
     Car car;
@@ -131,9 +143,17 @@ void clearTerminal()
 void readString(char *destiny, int MAXSIZE)
 {
     fgets(destiny, MAXSIZE, stdin);
+
+    // Remove the newline character from the string
     destiny[strlen(destiny) - 1] = '\0';
 }
 
+/**
+ * Query for an user with the given cpf.
+ *
+ * @param cpf
+ * @return A pointer to an User (Do not forget to free it)
+ */
 User *findUserByCpf(char *cpf)
 {
     FILE *userTable = openFileOrCreateForReading(USER_TABLE_PATH);
@@ -152,6 +172,12 @@ User *findUserByCpf(char *cpf)
     return NULL;
 }
 
+/**
+ * Query for a car with the given plate.
+ *
+ * @param plate
+ * @return A pointer to a Car (Do not forget to free it)
+ */
 Car *findCarByPlate(char *plate)
 {
     FILE *carTable = openFileOrCreateForReading(CAR_TABLE_PATH);
@@ -170,6 +196,12 @@ Car *findCarByPlate(char *plate)
     return NULL;
 }
 
+/**
+ * Query for a car with the given chassis.
+ *
+ * @param chassis
+ * @return A pointer to a Car (Do not forget to free it)
+ */
 Car *findCarByChassis(char *chassis)
 {
     FILE *carTable = openFileOrCreateForReading(CAR_TABLE_PATH);
@@ -211,6 +243,7 @@ void saveUser(User *user)
 {
     FILE *userTable = appendOrCreateFileForWriting(USER_TABLE_PATH);
 
+    // Query for an user with the same CPF
     User *userWithSameCpf = findUserByCpf(user->cpf);
 
     if (userWithSameCpf != NULL)
@@ -229,7 +262,9 @@ void saveCar(Car *car)
 {
     FILE *carTable = appendOrCreateFileForWriting(CAR_TABLE_PATH);
 
+    // Query for a car with the same plate
     Car *carWithSamePlate = findCarByPlate(car->plate);
+    // Query for a car with the same chassis
     Car *carWithSameChassis = findCarByChassis(car->chassis);
 
     if (carWithSamePlate != NULL || carWithSameChassis != NULL)
@@ -244,6 +279,16 @@ void saveCar(Car *car)
     fclose(carTable);
 }
 
+/**
+ * Query for the cars which belongs to an user with the given CPF.
+ * The cars are stored in a linked list,
+ * so you can iterate through them using the next field.
+ * The last element of the list will have a NULL next field.
+ * Do not forget to free the list using the freeCarsLinkedList function.
+ *
+ * @param userCpf
+ * @return A pointer to the root of the linked list of cars
+ */
 CarNode *findAllCarsByUserCpf(char *userCpf)
 {
     FILE *carTable = openFileOrCreateForReading(CAR_TABLE_PATH);
@@ -295,6 +340,14 @@ void freeCarsLinkedList(CarNode *root)
     }
 }
 
+/**
+ * Log in the user with the given CPF.
+ * Login works by writing the user's cpf in a session file.
+ * If the file is empty, the user is logged out.
+ *
+ * @param cpf
+ * @return int (1 if the login was successful, 0 otherwise)
+ */
 int login(char *cpf)
 {
     FILE *loginFile = overrideOrCreateFileForWriting(LOGIN_FILE_PATH);
@@ -318,12 +371,21 @@ int login(char *cpf)
     return FALSE;
 }
 
+/**
+ * Logout works by emptying the session file.
+ */
 void logout()
 {
     FILE *loginFile = overrideOrCreateFileForWriting(LOGIN_FILE_PATH);
     fclose(loginFile);
 }
 
+/**
+ * Get the Logged In User by reading the session file.
+ * If the file is empty, the function will return NULL.
+ *
+ * @return A pointer to User (Do not forget to free it)
+ */
 User *getLoggedInUser()
 {
     FILE *loginFile = openFileOrCreateForReading(LOGIN_FILE_PATH);
@@ -344,6 +406,12 @@ User *getLoggedInUser()
     return user;
 }
 
+/**
+ * Check if the user is logged in by reading the session file.
+ * If the file is empty, the user is not logged in.
+ *
+ * @return int (1 if the user is logged in, 0 otherwise)
+ */
 int isLoggedIn()
 {
     FILE *loginFile = openFileOrCreateForReading(LOGIN_FILE_PATH);
