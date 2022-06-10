@@ -1,3 +1,0 @@
-Para compilar e executar o programa:
-    - gcc aula1exer1_EduardoFarias_190086521.c -o run
-    - ./run
