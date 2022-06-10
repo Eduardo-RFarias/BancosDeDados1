@@ -83,5 +83,16 @@ void clearTerminal()
 void readString(char *destiny, int MAXSIZE)
 {
     fgets(destiny, MAXSIZE, stdin);
-    destiny[strlen(destiny) - 1] = '\0';
+
+    int len = strlen(destiny);
+
+    if (len == MAXSIZE - 1)
+    {
+        getchar();
+    }
+
+    if (len > 0 && destiny[len - 1] == '\n')
+    {
+        destiny[len - 1] = '\0';
+    }
 }

@@ -1,21 +1,21 @@
 #include "dbClient.h"
 
-User *createUser(char *name, char *cpf)
+User *createUser(char *name, unsigned long cpf)
 {
     User *user = (User *)malloc(sizeof(User));
     strcpy(user->name, name);
-    strcpy(user->cpf, cpf);
+    user->cpf = cpf;
     return user;
 }
 
-Car *createCar(char *chassis, char *plate, char *brand, char *model, char *userCpf)
+Car *createCar(char *chassis, char *plate, char *brand, char *model, unsigned long userCpf)
 {
     Car *car = (Car *)malloc(sizeof(Car));
     strcpy(car->chassis, chassis);
     strcpy(car->plate, plate);
     strcpy(car->brand, brand);
     strcpy(car->model, model);
-    strcpy(car->userCpf, userCpf);
+    car->userCpf = userCpf;
     return car;
 }
 
@@ -56,14 +56,14 @@ void saveCar(Car *car)
     fclose(carTable);
 }
 
-User *findUserByCpf(char *cpf)
+User *findUserByCpf(unsigned long cpf)
 {
     FILE *userTable = openFileOrCreateForReading(USER_TABLE_PATH);
     User *user = malloc(sizeof(User));
 
     while (fread(user, sizeof(User), 1, userTable) == TRUE)
     {
-        if (strcmp(user->cpf, cpf) == 0)
+        if (user->cpf == cpf)
         {
             fclose(userTable);
             return user;
@@ -110,7 +110,7 @@ Car *findCarByChassis(char *chassis)
     return NULL;
 }
 
-CarNode *findAllCarsByUserCpf(char *userCpf)
+CarNode *findAllCarsByUserCpf(unsigned long userCpf)
 {
     FILE *carTable = openFileOrCreateForReading(CAR_TABLE_PATH);
 
@@ -122,7 +122,7 @@ CarNode *findAllCarsByUserCpf(char *userCpf)
 
     while (fread(&car, sizeof(Car), 1, carTable) == TRUE)
     {
-        if (strcmp(car.userCpf, userCpf) == 0)
+        if (car.userCpf == userCpf)
         {
             if (cont == 0)
             {
