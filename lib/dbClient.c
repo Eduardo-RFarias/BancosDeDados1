@@ -1,6 +1,6 @@
 #include "dbClient.h"
 
-User *createUser(char *name, unsigned long cpf)
+User *createUser(char *name, unsigned long long cpf)
 {
     User *user = (User *)malloc(sizeof(User));
     strcpy(user->name, name);
@@ -8,7 +8,7 @@ User *createUser(char *name, unsigned long cpf)
     return user;
 }
 
-Car *createCar(char *chassis, char *plate, char *brand, char *model, unsigned long userCpf)
+Car *createCar(char *chassis, char *plate, char *brand, char *model, unsigned long long userCpf)
 {
     Car *car = (Car *)malloc(sizeof(Car));
     strcpy(car->chassis, chassis);
@@ -56,7 +56,7 @@ void saveCar(Car *car)
     fclose(carTable);
 }
 
-User *findUserByCpf(unsigned long cpf)
+User *findUserByCpf(unsigned long long cpf)
 {
     FILE *userTable = openFileOrCreateForReading(USER_TABLE_PATH);
     User *user = malloc(sizeof(User));
@@ -110,7 +110,7 @@ Car *findCarByChassis(char *chassis)
     return NULL;
 }
 
-CarNode *findAllCarsByUserCpf(unsigned long userCpf)
+CarNode *findAllCarsByUserCpf(unsigned long long userCpf)
 {
     FILE *carTable = openFileOrCreateForReading(CAR_TABLE_PATH);
 

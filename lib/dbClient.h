@@ -19,7 +19,7 @@
 
 typedef struct User_struct
 {
-    unsigned long cpf;
+    unsigned long long cpf;
     char name[USER_NAME_MAXSIZE];
 } User;
 
@@ -29,7 +29,7 @@ typedef struct Car_struct
     char plate[CAR_PLATE_MAXSIZE];
     char brand[CAR_BRAND_MAXSIZE];
     char model[CAR_MODEL_MAXSIZE];
-    unsigned long userCpf;
+    unsigned long long userCpf;
 } Car;
 
 typedef struct CarNode_struct
@@ -38,21 +38,21 @@ typedef struct CarNode_struct
     struct CarNode_struct *next;
 } CarNode;
 
-User *createUser(char *name, unsigned long cpf);
+User *createUser(char *name, unsigned long long cpf);
 
-Car *createCar(char *chassis, char *plate, char *brand, char *model, unsigned long userCpf);
+Car *createCar(char *chassis, char *plate, char *brand, char *model, unsigned long long userCpf);
 
 void saveUser(User *user);
 
 void saveCar(Car *car);
 
-User *findUserByCpf(unsigned long cpf);
+User *findUserByCpf(unsigned long long cpf);
 
 Car *findCarByPlate(char *plate);
 
 Car *findCarByChassis(char *chassis);
 
-CarNode *findAllCarsByUserCpf(unsigned long userCpf);
+CarNode *findAllCarsByUserCpf(unsigned long long userCpf);
 
 void freeCarsLinkedList(CarNode *root);
 

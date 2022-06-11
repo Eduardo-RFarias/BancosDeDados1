@@ -1,6 +1,6 @@
 #include "authService.h"
 
-int login(unsigned long cpf)
+int login(unsigned long long cpf)
 {
     FILE *loginFile = overrideOrCreateFileForWriting(LOGIN_FILE_PATH);
     FILE *userTable = openFileOrCreateForReading(USER_TABLE_PATH);
@@ -11,7 +11,7 @@ int login(unsigned long cpf)
     {
         if (user.cpf == cpf)
         {
-            fwrite(&(user.cpf), sizeof(unsigned long), 1, loginFile);
+            fwrite(&(user.cpf), sizeof(unsigned long long), 1, loginFile);
             fclose(loginFile);
             fclose(userTable);
             return TRUE;
@@ -33,9 +33,9 @@ User *getLoggedInUser()
 {
     FILE *loginFile = openFileOrCreateForReading(LOGIN_FILE_PATH);
 
-    unsigned long userCpf;
+    unsigned long long userCpf;
 
-    int success = fread(&userCpf, sizeof(unsigned long), 1, loginFile);
+    int success = fread(&userCpf, sizeof(unsigned long long), 1, loginFile);
 
     fclose(loginFile);
 
@@ -53,9 +53,9 @@ int isLoggedIn()
 {
     FILE *loginFile = openFileOrCreateForReading(LOGIN_FILE_PATH);
 
-    unsigned long userCpf;
+    unsigned long long userCpf;
 
-    if (fread(&userCpf, sizeof(unsigned long), 1, loginFile) == TRUE)
+    if (fread(&userCpf, sizeof(unsigned long long), 1, loginFile) == TRUE)
     {
         fclose(loginFile);
         return TRUE;

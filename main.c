@@ -11,7 +11,6 @@ Aula 1 - Exercício 1
 #include "stdio.h"
 #include "stdlib.h"
 
-#include "lib/dbClient.h"
 #include "lib/menus.h"
 
 int main()

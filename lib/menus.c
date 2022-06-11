@@ -96,10 +96,10 @@ void loginPrompt()
 {
     printf("\n\nLogin\n\n");
 
-    unsigned long cpf;
+    unsigned long long cpf;
 
     printf("Enter your CPF: \n");
-    scanf("%lu", &cpf);
+    scanf("%llu", &cpf);
     getchar();
 
     int success = login(cpf);
@@ -117,13 +117,13 @@ void registerUserPrompt()
     printf("\n\nRegistering a new user\n\n");
 
     char name[USER_NAME_MAXSIZE];
-    unsigned long cpf;
+    unsigned long long cpf;
 
     printf("Enter your name: \n");
     readString(name, USER_NAME_MAXSIZE);
 
     printf("Enter your CPF: \n");
-    scanf("%lu", &cpf);
+    scanf("%llu", &cpf);
     getchar();
 
     User *newUser = createUser(name, cpf);
@@ -133,7 +133,7 @@ void registerUserPrompt()
     free(newUser);
 }
 
-void registerCarPrompt(unsigned long loggedInUserCpf)
+void registerCarPrompt(unsigned long long loggedInUserCpf)
 {
     printf("\n\nRegistering new car\n\n");
 
@@ -161,7 +161,7 @@ void registerCarPrompt(unsigned long loggedInUserCpf)
     free(newCar);
 }
 
-void showAllCarsFromUser(unsigned long loggedInUserCpf)
+void showAllCarsFromUser(unsigned long long loggedInUserCpf)
 {
     printf("\n\nCurrent user's cars.\n\n");
 
