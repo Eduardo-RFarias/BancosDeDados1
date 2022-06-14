@@ -56,4 +56,8 @@ CarNode *findAllCarsByUserCpf(unsigned long long userCpf);
 
 void freeCarsLinkedList(CarNode *root);
 
+void insertUserToTable(User *user, FILE *userTable);
+
+void insertCarToTable(Car *car, FILE *carTable);
+
 #endif

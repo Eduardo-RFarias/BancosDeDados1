@@ -69,6 +69,28 @@ FILE *overrideOrCreateFileForWriting(char *fileName)
     exit(1);
 }
 
+FILE *openFileOrCreateForReadingAndWriting(char *fileName)
+{
+    FILE *file;
+
+    file = fopen(fileName, "rb+");
+
+    if (file != NULL)
+    {
+        return file;
+    }
+
+    file = fopen(fileName, "wb+");
+
+    if (file != NULL)
+    {
+        return file;
+    }
+
+    printf("Error opening file!\n");
+    exit(1);
+}
+
 void clearTerminal()
 {
 #if defined(_linux) || defined(unix) || defined(APPLE_)

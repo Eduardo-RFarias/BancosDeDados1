@@ -21,39 +21,110 @@ Car *createCar(char *chassis, char *plate, char *brand, char *model, unsigned lo
 
 void saveUser(User *user)
 {
-    FILE *userTable = appendOrCreateFileForWriting(USER_TABLE_PATH);
+    FILE *userTable = openFileOrCreateForReadingAndWriting(USER_TABLE_PATH);
 
-    User *userWithSameCpf = findUserByCpf(user->cpf);
+    insertUserToTable(user, userTable);
 
-    if (userWithSameCpf != NULL)
+    fclose(userTable);
+}
+
+void insertUserToTable(User *user, FILE *userTable)
+{
+    char isNotEmpty = FALSE;
+    char isNotLastOne = FALSE;
+    User userRead;
+
+    while (fread(&userRead, sizeof(User), 1, userTable) == TRUE)
     {
-        printf("User with same CPF already exists.\n");
-        printf("Press ENTER to continue...\n");
-        getchar();
-        return;
+        isNotEmpty = TRUE;
+
+        if (userRead.cpf == user->cpf)
+        {
+            printf("User with same CPF already exists.\n");
+            printf("Press ENTER to continue...\n");
+            getchar();
+            return;
+        }
+        else if (userRead.cpf > user->cpf)
+        {
+            isNotLastOne = TRUE;
+            fseek(userTable, -sizeof(User), SEEK_CUR);
+            break;
+        }
     }
 
     fwrite(user, sizeof(User), 1, userTable);
-    fclose(userTable);
+    fflush(userTable);
+
+    User userRead2;
+
+    while (fread(&userRead2, sizeof(User), 1, userTable) == TRUE)
+    {
+        fseek(userTable, -sizeof(User), SEEK_CUR);
+        fwrite(&userRead, sizeof(User), 1, userTable);
+        fflush(userTable);
+        userRead = userRead2;
+    }
+
+    if (isNotEmpty == TRUE && isNotLastOne == TRUE)
+    {
+        fwrite(&userRead, sizeof(User), 1, userTable);
+        fflush(userTable);
+    }
 }
 
 void saveCar(Car *car)
 {
-    FILE *carTable = appendOrCreateFileForWriting(CAR_TABLE_PATH);
+    FILE *carTable = openFileOrCreateForReadingAndWriting(CAR_TABLE_PATH);
 
-    Car *carWithSamePlate = findCarByPlate(car->plate);
-    Car *carWithSameChassis = findCarByChassis(car->chassis);
+    insertCarToTable(car, carTable);
 
-    if (carWithSamePlate != NULL || carWithSameChassis != NULL)
+    fclose(carTable);
+}
+
+void insertCarToTable(Car *car, FILE *carTable)
+{
+    char isNotEmpty = FALSE;
+    char isNotLastOne = FALSE;
+    Car carRead;
+
+    while (fread(&carRead, sizeof(Car), 1, carTable) == TRUE)
     {
-        printf("Car with same plate or chassis already exists.\n");
-        printf("Press ENTER to continue...\n");
-        getchar();
-        return;
+        isNotEmpty = TRUE;
+
+        if (strcmp(carRead.chassis, car->chassis) == 0 || strcmp(carRead.plate, car->plate) == 0)
+        {
+            printf("Car with the same Chassis or Plate already exists.\n");
+            printf("Press ENTER to continue...\n");
+            getchar();
+            return;
+        }
+        else if (strcmp(carRead.chassis, car->chassis) > 0)
+        {
+            isNotLastOne = TRUE;
+            fseek(carTable, -sizeof(Car), SEEK_CUR);
+            break;
+        }
     }
 
     fwrite(car, sizeof(Car), 1, carTable);
-    fclose(carTable);
+    fflush(carTable);
+
+    Car carRead2;
+
+    while (fread(&carRead2, sizeof(Car), 1, carTable) == TRUE)
+    {
+        fseek(carTable, -sizeof(Car), SEEK_CUR);
+        fwrite(&carRead, sizeof(Car), 1, carTable);
+        fflush(carTable);
+        carRead = carRead2;
+    }
+
+    if (isNotEmpty == TRUE && isNotLastOne == TRUE)
+    {
+        fwrite(&carRead, sizeof(Car), 1, carTable);
+        fflush(carTable);
+    }
 }
 
 User *findUserByCpf(unsigned long long cpf)

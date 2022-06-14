@@ -14,6 +14,8 @@ FILE *openFileOrCreateForReading(char *fileName);
 
 FILE *overrideOrCreateFileForWriting(char *fileName);
 
+FILE *openFileOrCreateForReadingAndWriting(char *fileName);
+
 void clearTerminal();
 
 void readString(char *destiny, int MAXSIZE);
