@@ -26,6 +26,9 @@ void saveUser(User *user)
     insertUserToTable(user, userTable);
 
     fclose(userTable);
+
+    printf("Press ENTER to continue...\n");
+    getchar();
 }
 
 void insertUserToTable(User *user, FILE *userTable)
@@ -41,8 +44,6 @@ void insertUserToTable(User *user, FILE *userTable)
         if (userRead.cpf == user->cpf)
         {
             printf("User with same CPF already exists.\n");
-            printf("Press ENTER to continue...\n");
-            getchar();
             return;
         }
         else if (userRead.cpf > user->cpf)
@@ -71,6 +72,8 @@ void insertUserToTable(User *user, FILE *userTable)
         fwrite(&userRead, sizeof(User), 1, userTable);
         fflush(userTable);
     }
+
+    printf("User saved successfully.\n");
 }
 
 void saveCar(Car *car)
@@ -80,6 +83,9 @@ void saveCar(Car *car)
     insertCarToTable(car, carTable);
 
     fclose(carTable);
+
+    printf("Press ENTER to continue...\n");
+    getchar();
 }
 
 void insertCarToTable(Car *car, FILE *carTable)
@@ -95,8 +101,6 @@ void insertCarToTable(Car *car, FILE *carTable)
         if (strcmp(carRead.chassis, car->chassis) == 0 || strcmp(carRead.plate, car->plate) == 0)
         {
             printf("Car with the same Chassis or Plate already exists.\n");
-            printf("Press ENTER to continue...\n");
-            getchar();
             return;
         }
         else if (strcmp(carRead.chassis, car->chassis) > 0)
@@ -125,6 +129,8 @@ void insertCarToTable(Car *car, FILE *carTable)
         fwrite(&carRead, sizeof(Car), 1, carTable);
         fflush(carTable);
     }
+
+    printf("Car saved successfully.\n");
 }
 
 User *findUserByCpf(unsigned long long cpf)
